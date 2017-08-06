@@ -1,0 +1,11 @@
+{
+    "type": "web",
+
+    "metadatas": {
+        "title": "hi",
+        "description": "yo"
+    },
+
+    "needs_authentication": false,
+    "is_auth_page": true
+}

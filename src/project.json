@@ -1,0 +1,6 @@
+{
+    "name": "vcms-project-starter",
+
+    "env": "dev",
+    "credentials_file": "C:/localweb/includes/vcms"
+}
