@@ -11,7 +11,7 @@
 
 <?=$inlines?>
 
-<link rel="import" href="/components/vcms-polymer/lib/dev/tools.html">
+<script src="/components/webcomponentsjs/webcomponents-lite.js"></script>
 </head>
 
 <body>

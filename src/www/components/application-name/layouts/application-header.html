@@ -1,0 +1,60 @@
+<link rel="import" href="../../vcms-polymer/lib/mixins/vcms-app-element.html">
+
+
+
+<dom-module id="application-header">
+  <template>
+    <style include="iron-flex">
+      :host {
+        display: block;
+        @apply --layout-horizontal;
+        @apply --layout-center;
+        height: 80px;
+        background-color: var(--paper-grey-900);
+
+        padding: 0 20px;
+        color: #fff;
+      }
+
+      iron-icon[icon=menu] {
+        display: none;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+
+      @media (max-width: 425px) {
+        :host {
+          height: 60px;
+        }
+
+        iron-icon[icon=menu] {
+          display: block;
+        }
+      }
+    </style>
+
+    <iron-icon icon=menu on-click=_openMenu></iron-icon>
+    <p class="flex">Learn With Sounds Project <sup>&copy;</sup></p>
+    <slot></slot>
+  </template>
+
+  <script>
+  class ApplicationHeader extends Vcms.AppElement {
+
+    static get is() { return 'application-header' }
+
+    static get observers() { return [
+      '_userChanged(AppData.user)'
+    ]}
+
+    _userChanged(user) {
+      console.log(user);
+    }
+
+    _openMenu() {
+      this.setAppData('drawerOpened', true);
+    }
+  }
+  window.customElements.define(ApplicationHeader.is, ApplicationHeader);
+  </script>
+</dom-module>

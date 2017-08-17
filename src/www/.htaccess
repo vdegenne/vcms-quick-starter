@@ -6,8 +6,8 @@ RewriteEngine On
    RewriteEngine Off
 </Files>
 
+RewriteRule ^(users|login)$ "" [L,QSA]
 
 RewriteCond %{REQUEST_URI} !^/(bower_components|components)
 RewriteCond %{REQUEST_URI} !^/(img)
 RewriteRule ^(.*)$ /index.php [L,QSA]
-

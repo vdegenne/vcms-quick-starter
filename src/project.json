@@ -2,5 +2,5 @@
     "name": "vcms-project-starter",
 
     "env": "dev",
-    "credentials_file": "C:/localweb/includes/vcms"
+    "credentials_file": "c:/localweb/includes/vcms"
 }

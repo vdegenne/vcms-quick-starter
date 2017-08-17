@@ -2,8 +2,10 @@
   "type": "web",
 
   "metadatas": {
-    "title": "Hi everyone, what's up",
-    "description": "welcome to my website",
-    "keywords": "not,sure,this,is,important"
-  }
+    "title": "Page Title",
+    "description": "",
+    "keywords": ""
+  },
+
+  "inlines": ["css/main.html"]
 }
