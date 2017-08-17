@@ -1,0 +1,25 @@
+[
+    {
+        "name": "vdegenne/vcms",
+        "version": "v3.0.0",
+        "version_normalized": "3.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/vdegenne/vcms.git",
+            "reference": "9980ef31bffe878351333e1f3cc3606894676931"
+        },
+        "time": "2017-08-14T21:19:26+00:00",
+        "type": "framework",
+        "installation-source": "source",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Valentin Degenne",
+                "email": "vdegenne@gmail.com"
+            }
+        ],
+        "description": "use the power."
+    }
+]
