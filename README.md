@@ -6,8 +6,15 @@ First thing first, you need to git clone this repository or download from the re
 
 ```
 $ git clone https://github.com/vdegenne/vcms-quick-starter.git <project_name>
-// or
-$ wget https://github.com/vdegenne/vcms-quick-starter/archive/<version>.zip
+```
+
+I recommand using wget as it won't download the .git directory
+
+```
+$ wget https://github.com/vdegenne/vcms-quick-starter/archive/<version>.tar.gz
+$ mkdir <project-name>
+$ tar xzvf <version>.tar.gz -C <project-name>
+$ rm -f <version>.tar.gz
 ```
 ### dependencies
 
@@ -16,5 +23,5 @@ The dependencies are a set of bower tools (polymer, vcms-polymer, ...) and start
 that helps to build nice and modular application in the vcms environment.
 
 ```
-cd <project_name> && bower install
+$ cd <project_name> && bower install
 ```
