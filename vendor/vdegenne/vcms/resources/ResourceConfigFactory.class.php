@@ -2,11 +2,12 @@
 namespace vcms\resources;
 
 
+use vcms\Config;
+use vcms\FileSystem;
 use vcms\utils\Object;
 
 
-class ResourceConfigFactory
-{
+class ResourceConfigFactory {
     const RESOURCE_CONFIG_FILENAME = 'resource.json';
 
     /**
@@ -15,46 +16,66 @@ class ResourceConfigFactory
      * @throws ResourceException
      * @throws \Exception
      */
-    static function create_config_object (string $configPath, string $resourceType = null)
+    static function load_config_object (string $configPath, string $resourceType = null)
     {
-        if (!isset(pathinfo($configPath)['extension'])) {
-            $configPath=$configPath . '/' . self::RESOURCE_CONFIG_FILENAME;
+        $pathIsFilepath = isset(pathinfo($configPath)['extension']);
+        $_configPath = $configPath;
+
+        if (!$pathIsFilepath) {
+            $_configPath = $configPath . '/' . self::RESOURCE_CONFIG_FILENAME;
         }
 
         if (!file_exists($configPath)) {
-            throw new ResourceException("$configPath configuration file not found", 2);
+            throw new ResourceException("$_configPath configuration file not found", 2);
         }
 
-        $ConfigStdClass = json_decode(file_get_contents($configPath));
-
-
+        /*
+         * we should determine the type first
+         */
+        $type = null;
+        $json = null;
         if ($resourceType !== null) {
-            $ConfigStdClass->type = $resourceType;
+            $type = $resourceType;
+            $json = $_configPath;
         }
-        if (!isset($ConfigStdClass->type)) {
-            $ConfigStdClass->type = '';
+        elseif ($json = json_decode(file_get_contents($_configPath))) {
+            $type = $json->type === null ? '' : $json->type;
         }
+        $type = strtolower($type);
+        if ($type !== '') {
+            $type[0] = strtoupper($type[0]);
+        }
+        // class to use for this requested Configuration Object
+        $ConfigClass = __NAMESPACE__ . '\\' . $type . 'ResourceConfig';
 
 
-        try {
-            if (!empty($ConfigStdClass->type)) {
-                $ConfigStdClass->type = strtolower($ConfigStdClass->type);
-                $ConfigStdClass->type[0] = strtoupper($ConfigStdClass->type[0]);
+        $Config = null;
+        $Config = $ConfigClass::construct_from_file($json);
+        $Config->type = $type;
+
+
+        /* we should implement the global configuration merging here */
+        // from dirpath to PROJECT LOCATION
+        // we check if there is a GLOBAL_CONFIGURATION_FILENAME file in the current location
+        // then we take that content and fill_the_blanks with the current resource
+        // we loop the process until the end
+
+        /* we should implement a mechanism in inherit.json to stop filling the blanks
+           if the current inherit.json has a property called stop-inherit set to true */
+        if ($type !== 'V') {
+            $currentPath = $configPath;
+            if ($pathIsFilepath) {
+                $currentPath = FileSystem::one_folder_up($currentPath);
             }
-            $classname = __NAMESPACE__ . '\\' . $ConfigStdClass->type . 'ResourceConfig';
-            $Config = new $classname();
-
-            /** If the class is not found, the exception is useless because a FATAL ERROR
-             * takes place.
-             * We need to complexify the error handlers.
-             * https://insomanic.me.uk/php-trick-catching-fatal-errors-e-error-with-a-custom-error-handler-cea2262697a2
-             */
+            while ($currentPath !== '') {
+                $filepath = $currentPath . '/' . Resource::GLOBAL_CONFIGURATION_FILENAME;
+                if (file_exists($filepath)) {
+                    $inheritConfig = self::load_config_object($filepath, 'V');
+                    $Config->fill_the_blanks($inheritConfig);
+                }
+                $currentPath = FileSystem::one_folder_up($currentPath);
+            }
         }
-        catch (Exception $e) {
-            throw new \Exception('this type of resource is not implemented');
-        }
-
-        Object::cast($ConfigStdClass, $Config);
 
         /* check if required attributes are in the configuration file */
         $Config->check_required();

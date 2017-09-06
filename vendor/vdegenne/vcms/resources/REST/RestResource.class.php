@@ -11,6 +11,11 @@ class RestResource extends VResource
      */
     protected $Request;
 
+    /**
+     * @var RestResourceConfig
+     */
+    public $Config;
+
     public $restContentFilename;
     public $restConfigFilename;
 
@@ -20,7 +25,7 @@ class RestResource extends VResource
         $this->Request = $request;
 
         $this->determine_method_files();
-        $RestConfig = ResourceConfigFactory::create_config_object(
+        $RestConfig = ResourceConfigFactory::load_config_object(
             $this->dirpath . '/' . $this->restConfigFilename,
             'rest');
 
@@ -29,13 +34,16 @@ class RestResource extends VResource
     }
 
 
-    function process_response ()
+    function process_response (): string
     {
         foreach ($GLOBALS as $globalname => $globalvalue) {
             global $$globalname;
         }
 
-        parent::process_response();
+        parent::ensure_params();
+
+        $Request = $this->Request;
+        $QueryString = $this->Request->QueryString;
 
         /* make GET and POST arguments local variables */
         if ($this->Config->get_params) {
@@ -49,12 +57,13 @@ class RestResource extends VResource
             }
         }
 
-        // chdir($this->dirpath);
+
         ob_start();
         include PROJECT_LOCATION . '/' . $this->dirpath . '/' . $this->restContentFilename;
         $this->Response->content = ob_get_contents();
-        @ob_end_clean();
-        // chdir($Project->location);
+        ob_end_clean();
+
+        return parent::process_response();
     }
 
 

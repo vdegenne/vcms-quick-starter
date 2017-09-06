@@ -7,13 +7,14 @@ class VResource extends Resource
     const REPO_DIRPATH = 'pages';
     // public static $REPO_DIRPATH = 'resources';
 
+    /**
+     * @var VResourceConfig
+     */
+    public $Config;
 
-    function process_response ()
+    function ensure_params()
     {
         global $Request, $Feedback;
-
-        parent::process_response();
-
 
         if ($this->Config->get_params !== null) {
             if (!$Request::has_get($this->Config->get_params)) {
@@ -25,6 +26,11 @@ class VResource extends Resource
                 $Feedback->failure('needs arguments.');
             }
         }
+    }
+
+    function process_response (): string
+    {
+        return parent::process_response();
     }
 
 }

@@ -2,41 +2,37 @@
 namespace vcms;
 
 
-class Session extends VObject
-{
-    /**
-     * @var User
-     */
-    protected $User;
+class Session extends VObject {
+
+    function __construct () { session_start(); }
 
 
-    static function open (): Session
-    {
-        session_start();
 
-        /* get the saved properties back */
-        $Session = new Session();
+    function get_session_user_object() {
+        global $Resource;
 
-        foreach (get_object_vars($Session) as $propName => $propValue) {
-            if (@$_SESSION[$propName]) {
-                $Session->{$propName} = $_SESSION[$propName];
-            }
+        $sessionUserObject = $Resource->Config->session_user_object;
+        if ($sessionUserObject === null) {
+            $sessionUserObject = 'vcms\User';
         }
-
-        return $Session;
+        return $sessionUserObject;
     }
 
-    function __set ($name, $value)
-    {
-        if (array_key_exists($name, get_object_vars($this))) {
-            $this->{$name} = $value;
-            $_SESSION[$name] = $this->{$name};
+
+
+    function __set ($name, $value) {
+        $_SESSION[$name] = $value;
+    }
+
+    function __isset ($name) {
+        $isset = isset($_SESSION[$name]);
+        if (!$isset) {
+            return parent::__isset($name);
         }
+        return $isset;
     }
 
+    function __get ($name) { return $_SESSION[$name]; }
 
-    function __get ($name)
-    {
-        return $this->{$name};
-    }
+
 }

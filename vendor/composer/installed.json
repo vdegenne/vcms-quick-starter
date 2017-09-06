@@ -1,14 +1,14 @@
 [
     {
         "name": "vdegenne/vcms",
-        "version": "v3.0.0",
-        "version_normalized": "3.0.0.0",
+        "version": "v4.2.1",
+        "version_normalized": "4.2.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/vdegenne/vcms.git",
-            "reference": "9980ef31bffe878351333e1f3cc3606894676931"
+            "reference": "1403f1c054b3d406702263c81d20f79f2d758319"
         },
-        "time": "2017-08-14T21:19:26+00:00",
+        "time": "2017-09-01T12:03:50+00:00",
         "type": "framework",
         "installation-source": "source",
         "license": [

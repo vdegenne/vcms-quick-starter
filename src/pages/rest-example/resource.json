@@ -1,7 +1,0 @@
-{
-    "type": "REST",
-
-    "mimetype": "text/html",
-
-    "needs_authentication": true
-}

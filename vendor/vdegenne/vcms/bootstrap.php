@@ -10,7 +10,7 @@ use vcms\User;
 use vcms\database\Credential;
 use vcms\database\Database;
 use vcms\utils\Authentication;
-
+require __DIR__ . '/scripts/error_handling.inc.php';
 require_once __DIR__ . "/Project.class.php";
 
 $Project = Project::get();
@@ -22,38 +22,50 @@ require_once __DIR__ . "/__autoloader.inc.php";
 
 /* the http request object with some useful properties */
 $Request = Request::generate_http_request();
+// globals
 $QueryString = $Request->QueryString;
+$Resource = $Request->associatedResource;
 
-/** @var \vcms\resources\Resource $Resource */
-$Resource = $Request->generate_resource();
-$Resource->Config->fill_the_blanks(
-    ResourceConfigFactory::create_config_object(VResource::REPO_DIRPATH . '/resources.json', 'V'));
 
-/**
- * This Object is used to send a
- * json back to the front-end.
- * It can be sent before the main
- * $Resource resource.
- * @var FEEDBACKResource $Feedback
- */
-$Feedback = new FeedbackResource();
+
+
 
 /* prepare the database */
 Credential::$search_in = [__DIR__, PROJECT_LOCATION];
-if ($Project->credentials_file !== null) {
-    Credential::$search_in[] = $Project->credentials_file;
+if ($Project->db_credentials_search_paths !== null) {
+    Credential::$search_in = array_unique(array_merge(
+        Credential::$search_in, $Project->db_credentials_search_paths
+    ));
 }
+
 $Database = null;
 if ($Resource->Config->needs_database) {
     $Database = Database::get_from_handler($Resource->Config->database);
 }
 
-/** @var Session $Session */
-$Session = Session::open();
-if ($Session->User === null) {
-    $Session->User = new User();
+$Session = new Session();
+/* if no User Object is in the Session
+   it means that is the first time the client visit the app
+   or the client removes the php session cookie
+   no problem, let's make a new User session */
+if (!isset($Session->User)) {
+    $userObject;
+    if (($userObject = $Resource->Config->session_user_object) !== null) {
+        if (!is_subclass_of($userObject, 'vcms\\User')) {
+            throw new Exception('The custom user object needs to be a subclass of vcms\\User');
+        }
+        $Session->User = new $Resource->Config->session_user_object();
+    }
+    else {
+        $Session->User = new User();
+    }
 }
+$GLOBALS['User'] = $Session->User;
 
+
+if (file_exists(PROJECT_LOCATION . '/includes/bootstrap.php')) {
+    include PROJECT_LOCATION . '/includes/bootstrap.php';
+}
 
 /* redirect if authentication is needed */
 if ($Resource->Config->needs_authentication && !$Session->User->isAuthenticated) {
@@ -247,6 +259,15 @@ if ($Resource->Config->is_auth_page) {
 //    global $Request;
 //    return call_user_func_array([$Request, 'mkurl'], func_get_args());
 //}
+
+/**
+ * This Object is used to send a
+ * json back to the front-end.
+ * It can be sent before the main
+ * $Resource resource.
+ * @var FEEDBACKResource $Feedback
+ */
+$Feedback = new FeedbackResource();
 
 $Resource->send();
 /**

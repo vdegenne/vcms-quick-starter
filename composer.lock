@@ -1,0 +1,39 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "ac4b02842984c33e575bf3de2f80ee37",
+    "packages": [
+        {
+            "name": "vdegenne/vcms",
+            "version": "v4.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vdegenne/vcms.git",
+                "reference": "1403f1c054b3d406702263c81d20f79f2d758319"
+            },
+            "type": "framework",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Valentin Degenne",
+                    "email": "vdegenne@gmail.com"
+                }
+            ],
+            "description": "use the power.",
+            "time": "2017-09-01T12:03:50+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

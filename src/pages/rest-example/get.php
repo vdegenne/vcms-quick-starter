@@ -1,3 +1,0 @@
-<?php
-
-$Feedback->success('yeah');

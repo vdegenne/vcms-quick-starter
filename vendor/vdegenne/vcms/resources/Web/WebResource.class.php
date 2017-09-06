@@ -28,19 +28,16 @@ class WebResource extends Resource {
         }
     }
 
-    function process_response (string $processorFilepath = null, ...$globals)
+    function process_response (string $processorFilepath = null, ...$globals): string
     {
-
-        parent::process_response();
 
         foreach ($GLOBALS as $globalname => $globalvalue) {
             global $$globalname;
         }
 
-
-        $title = $this->metadatas->title;
-        $description = @$this->metadatas->description;
-        $keywords = @$this->metadatas->keywords;
+        $title = $this->Config->metadatas->title;
+        $description = @$this->Config->metadatas->description;
+        $keywords = @$this->Config->metadatas->keywords;
 
         $head = $this->dirpath . '/' . self::HEAD_FILENAME;
         $body = $this->dirpath . '/' . self::BODY_FILENAME;
@@ -56,6 +53,8 @@ class WebResource extends Resource {
         include 'layouts/structure.php';
         $this->Response->content = ob_get_contents();
         ob_end_clean();
+
+        return parent::process_response();
     }
 
 }
